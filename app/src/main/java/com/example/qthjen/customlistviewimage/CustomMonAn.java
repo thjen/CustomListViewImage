@@ -8,8 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 public class CustomMonAn extends BaseAdapter {
@@ -42,21 +40,35 @@ public class CustomMonAn extends BaseAdapter {
         return 0;
     }
 
+    /** sử dụng view holder để tối tư tránh việc ánh xạ nhiều lần (có thể không cần dùng nếu ít dữ liệu)**/
+    private class ViewHolder {
+        ImageView iv;
+        TextView tv1;
+        TextView tv2;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        LayoutInflater layoutInflater = (LayoutInflater) myContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ViewHolder viewHolder = new ViewHolder();
 
-        convertView = layoutInflater.inflate(myLayout, null);
+        if ( convertView == null ) {
 
-        TextView tv1 = (TextView) convertView.findViewById(R.id.tv1);
-        tv1.setText(arrayMonAn.get(position).mName);
+            LayoutInflater layoutInflater = (LayoutInflater) myContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = layoutInflater.inflate(myLayout, null);
+            /** Ánh xạ **/
+            viewHolder.tv1 = (TextView) convertView.findViewById(R.id.tv1);
+            viewHolder.tv2 = (TextView) convertView.findViewById(R.id.tv2);
+            viewHolder.iv = (ImageView) convertView.findViewById(R.id.iv);
+            convertView.setTag(viewHolder);
 
-        TextView tv2 = (TextView) convertView.findViewById(R.id.tv2);
-        tv2.setText(String.valueOf(arrayMonAn.get(position).mPrice));
-
-        ImageView iv = (ImageView) convertView.findViewById(R.id.iv);
-        iv.setImageResource(arrayMonAn.get(position).mImage);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+        /** gán giá trị **/
+        viewHolder.tv1.setText(arrayMonAn.get(position).mName);
+        viewHolder.tv2.setText(String.valueOf(arrayMonAn.get(position).mPrice));
+        viewHolder.iv.setImageResource(arrayMonAn.get(position).mImage);
 
         return convertView;
     }
